@@ -1,11 +1,12 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Link from 'next/link';
+import { fetchTeams } from '../../src/api'; // Ensure this path is correct
 
 const TeamContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
-  justify-content: center; 
+  justify-content: center;
 `;
 
 const Card = styled.div`
@@ -21,16 +22,71 @@ const CardTitle = styled.h3`
   padding: 1rem;
 `;
 
-export default function TeamList({ teams }) {
+const Header = styled.h1`
+  text-align: center;
+  margin: 20px 0;
+`;
+
+const Wrapper = styled.div`
+  display: inline-block;
+  font-size: 24px;
+  white-space: nowrap;
+  overflow: hidden;
+  border-right: 2px solid;
+  animation: blink 0.75s step-end infinite;
+
+  @keyframes blink {
+    from, to { border-color: transparent }
+    50% { border-color: black }
+  }
+`;
+
+const Typewriter = ({ text, speed = 150 }) => {
+    const [displayedText, setDisplayedText] = useState('');
+
+    useEffect(() => {
+        let index = 0;
+        const interval = setInterval(() => {
+            setDisplayedText(text.substring(0, index + 1));
+            index++;
+            if (index === text.length) {
+                clearInterval(interval);
+            }
+        }, speed);
+
+        return () => clearInterval(interval);
+    }, [text, speed]);
+
+    return <Wrapper>{displayedText}</Wrapper>;
+};
+
+export default function TeamList() {
+    const [teams, setTeams] = useState([]);
+
+    useEffect(() => {
+        async function loadTeams() {
+            const fetchedTeams = await fetchTeams();
+            setTeams(fetchedTeams);
+        }
+        loadTeams();
+    }, []);
+
+    console.log(teams); // Log the teams array to see what it contains
+
     return (
-        <TeamContainer>
-            {teams.map((team, index) => (
-                <Link key={index} href={`/team/${team.team.id}`} passHref>
-                    <Card>
-                        <CardTitle>{team.team.name}</CardTitle>
-                    </Card>
-                </Link>
-            ))}
-        </TeamContainer>
+        <div>
+            <Header>
+                <Typewriter text="Premier League" />
+            </Header>
+            <TeamContainer>
+                {teams.map((team, index) => (
+                    <Link key={index} href={`/team/${team.id}`} passHref>
+                        <Card>
+                            <CardTitle>{team.name}</CardTitle>
+                        </Card>
+                    </Link>
+                ))}
+            </TeamContainer>
+        </div>
     );
 }
