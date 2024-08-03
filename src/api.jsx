@@ -12,7 +12,17 @@ export const fetchTeams = async () => {
             throw new Error('Network response was not ok');
         }
         const data = await response.json();
-        return data.response;
+        return data.response.map(team => ({
+            id: team.team.id,
+            name: team.team.name,
+            founded: team.team.founded,
+            country: team.team.country,
+            logo: team.team.logo,
+            venue: {
+                name: team.venue.name,
+                capacity: team.venue.capacity,
+            },
+        }));
     } catch (error) {
         console.error('Fetching teams failed:', error);
         return [];
