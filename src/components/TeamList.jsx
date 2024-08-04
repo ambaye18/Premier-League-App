@@ -22,8 +22,14 @@ const CardTitle = styled.h3`
   padding: 1rem;
 `;
 
-const Header = styled.h1`
+const MainHeader = styled.header`
+  background-color: #343a40;
+  color: white;
+  padding: 20px;
   text-align: center;
+`;
+
+const Header = styled.h1`
   margin: 20px 0;
 `;
 
@@ -75,9 +81,9 @@ export default function TeamList() {
 
     return (
         <div>
-            <Header>
-                <Typewriter text="Premier League" />
-            </Header>
+            <MainHeader>
+                <Typewriter text="Premier League Teams" />
+            </MainHeader>
             <TeamContainer>
                 {teams.map((team, index) => (
                     <Link key={index} href={`/team/${team.id}`} passHref>
