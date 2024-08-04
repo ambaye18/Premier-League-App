@@ -22,7 +22,7 @@ export default function Home({ teams }) {
   return (
       <Container>
         <Navbar>
-          <NavbarBrand>Football Teams</NavbarBrand>
+          <NavbarBrand></NavbarBrand>
         </Navbar>
         <TeamList teams={teams} />
       </Container>
