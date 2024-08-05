@@ -69,6 +69,7 @@ export default function TeamList({ teams }) {
     useEffect(() => {
         async function loadTeams() {
             const fetchedTeams = await fetchTeams();
+            fetchedTeams.sort((a, b) => a.name.localeCompare(b.name)); // Sort teams alphabetically by name
             setLoadedTeams(fetchedTeams);
         }
         loadTeams();
