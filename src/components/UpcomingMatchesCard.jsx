@@ -1,8 +1,6 @@
-// src/components/UpcomingMatchesCard.jsx
-
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { fetchUpcomingMatches } from '../api'; // Ensure this path is correct
+import { fetchUpcomingMatches } from '../api';
 
 const Card = styled.div`
   border: 1px solid #ddd;
@@ -14,8 +12,31 @@ const Card = styled.div`
 const Fixture = styled.div`
   display: flex;
   justify-content: space-between;
+  align-items: center;
   margin: 10px 0;
 `;
+
+const TeamLogo = styled.img`
+  width: 50px;
+  height: 50px;
+  margin-right: 10px;
+`;
+
+const MatchInfo = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const Date = styled.div`
+  font-size: 0.9rem;
+  color: #555;
+`;
+
+const formatDate = (dateString) => {
+    const date = new window.Date(dateString);  // Explicitly use window.Date to avoid conflicts
+    const options = { year: 'numeric', month: 'short', day: 'numeric' };
+    return date.toLocaleDateString(undefined, options);
+};
 
 const UpcomingMatchesCard = ({ teamId }) => {
     const [fixtures, setFixtures] = useState([]);
@@ -46,20 +67,16 @@ const UpcomingMatchesCard = ({ teamId }) => {
         <Card>
             {fixtures.map((fixture) => (
                 <Fixture key={fixture.fixture.id}>
-                    <div>
-                        <img src={fixture.teams.home.logo} alt={fixture.teams.home.name} width="50" />
+                    <MatchInfo>
+                        <TeamLogo src={fixture.teams.home.logo} alt={fixture.teams.home.name} />
                         <span>{fixture.teams.home.name}</span>
-                    </div>
-                    <div>
-                        <span>vs</span>
-                    </div>
-                    <div>
-                        <img src={fixture.teams.away.logo} alt={fixture.teams.away.name} width="50" />
+                    </MatchInfo>
+                    <span>vs</span>
+                    <MatchInfo>
+                        <TeamLogo src={fixture.teams.away.logo} alt={fixture.teams.away.name} />
                         <span>{fixture.teams.away.name}</span>
-                    </div>
-                    <div>
-                        <span>{new Date(fixture.fixture.date).toLocaleDateString()}</span>
-                    </div>
+                    </MatchInfo>
+                    <Date>{formatDate(fixture.fixture.date)}</Date>
                 </Fixture>
             ))}
         </Card>
