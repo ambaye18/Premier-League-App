@@ -1,8 +1,6 @@
-// src/components/TeamRostersCard.jsx
-
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { fetchTeamPlayers } from '../api'; // Ensure this path is correct
+import { fetchTeamPlayers } from '../api';
 
 const Card = styled.div`
   border: 1px solid #ddd;
@@ -11,13 +9,13 @@ const Card = styled.div`
   margin: 20px 0;
 `;
 
-const RosterButton = styled.button`
-  background: #007bff;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
+const SeasonLink = styled.div`
+  color: #007bff;
   cursor: pointer;
+  margin: 5px 0;
+  &:hover {
+    text-decoration: underline;
+  }
 `;
 
 const PlayerCard = styled.div`
@@ -36,13 +34,14 @@ const TeamRostersCard = ({ teamId }) => {
     const [roster, setRoster] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [showRoster, setShowRoster] = useState(false);
+    const [seasons, setSeasons] = useState([]);
+    const [selectedSeason, setSelectedSeason] = useState(null);
 
-    const fetchRosters = async () => {
+    const fetchRosters = async (season) => {
         if (!teamId) return;
 
         try {
-            const players = await fetchTeamPlayers(teamId);
+            const players = await fetchTeamPlayers(teamId, season);
             setRoster(players);
             setLoading(false);
         } catch (err) {
@@ -51,37 +50,55 @@ const TeamRostersCard = ({ teamId }) => {
         }
     };
 
-    const toggleRoster = () => {
-        setShowRoster(!showRoster);
-        if (!showRoster) {
-            fetchRosters();
+    useEffect(() => {
+        const currentYear = new Date().getFullYear();
+        const seasonYears = [];
+        for (let i = currentYear; i >= currentYear - 5; i--) {
+            seasonYears.push(`${i}-${(i + 1).toString().slice(-2)}`);
         }
-    };
+        setSeasons(seasonYears);
+    }, []);
 
-    if (loading) return <div>Loading roster...</div>;
-    if (error) return <div>Error: {error}</div>;
+    const handleSeasonClick = (season) => {
+        setSelectedSeason(season);
+        setLoading(true);
+        fetchRosters(season);
+    };
 
     return (
         <Card>
-            <RosterButton onClick={toggleRoster}>
-                {showRoster ? 'Hide Roster' : 'Show Roster'}
-            </RosterButton>
-            {showRoster && roster.map((player) => (
-                <PlayerCard key={player.player.id}>
-                    <PlayerDetails>
-                        <div>
-                            <img src={player.player.photo} alt={player.player.name} width="50" />
-                            <span>{player.player.name}</span>
-                        </div>
-                        <div>
-                            <span>{player.statistics[0].team.name}</span>
-                        </div>
-                        <div>
-                            <span>Stats: {player.statistics[0].games.appearances} appearances</span>
-                        </div>
-                    </PlayerDetails>
-                </PlayerCard>
+            <h2>Rosters</h2>
+            {seasons.map((season) => (
+                <SeasonLink key={season} onClick={() => handleSeasonClick(season)}>
+                    {season}
+                </SeasonLink>
             ))}
+            {loading && selectedSeason && <div>Loading roster for {selectedSeason}...</div>}
+            {error && <div>Error: {error}</div>}
+            {!loading && !error && selectedSeason && (
+                <>
+                    <h3>Season {selectedSeason}</h3>
+                    {roster.length > 0 ? (
+                        roster.map((player) => (
+                            <PlayerCard key={player.player.id}>
+                                <PlayerDetails>
+                                    <div>
+                                        <span>{player.player.name}</span>
+                                    </div>
+                                    <div>
+                                        <span>{player.statistics[0].team.name}</span>
+                                    </div>
+                                    <div>
+                                        <span>Appearances: {player.statistics[0].games.appearances}</span>
+                                    </div>
+                                </PlayerDetails>
+                            </PlayerCard>
+                        ))
+                    ) : (
+                        <div>No data available for this season.</div>
+                    )}
+                </>
+            )}
         </Card>
     );
 };
