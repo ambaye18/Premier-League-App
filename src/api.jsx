@@ -86,9 +86,10 @@ export const fetchUpcomingMatches = async (teamId) => {
     }
 };
 
-export const fetchTeamPlayers = async (teamId) => {
+export const fetchTeamPlayers = async (teamId, season = '2023') => {
     try {
-        const response = await fetch(`${BASE_URL}/players?team=${teamId}&season=2023`, {
+        console.log(`Fetching players for team ${teamId} for season ${season}`);
+        const response = await fetch(`${BASE_URL}/players?team=${teamId}&season=${season}`, {
             headers: {
                 'x-apisports-key': API_KEY,
             },
@@ -97,10 +98,10 @@ export const fetchTeamPlayers = async (teamId) => {
             throw new Error('Network response was not ok');
         }
         const data = await response.json();
-        console.log('fetchTeamPlayers Response:', data);
+        console.log(`fetchTeamPlayers Response for ${teamId} season ${season}:`, data);
         return data.response;
     } catch (error) {
-        console.error('Fetching team players failed:', error);
+        console.error(`Fetching team players failed for ${teamId} season ${season}:`, error);
         return [];
     }
 };
