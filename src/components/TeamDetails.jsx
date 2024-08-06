@@ -1,102 +1,110 @@
-import React from 'react';
-import { useRouter } from 'next/router';
-import styled from 'styled-components';
-import { fetchTeams, fetchTeamDetails } from '../../src/api'; // Ensure this path is correct
-import UpcomingMatchesCard from '../../src/components/UpcomingMatchesCard';
-import TeamRostersCard from '../../src/components/TeamRostersCard';
+import React from 'react'; // Import React library
+import { useRouter } from 'next/router'; // Import useRouter hook from Next.js
+import styled from 'styled-components'; // Import styled-components for styling
+import { fetchTeams, fetchTeamDetails } from '../../src/api'; // Import API functions
+import UpcomingMatchesCard from '../../src/components/UpcomingMatchesCard'; // Import UpcomingMatchesCard component
+import TeamRostersCard from '../../src/components/TeamRostersCard'; // Import TeamRostersCard component
 
+// Styled component for the main container
 const Container = styled.div`
-  padding: 20px;
-  max-width: 1200px;
-  margin: auto;
+padding: 20px;
+max-width: 1200px;
+margin: auto;
 `;
 
+// Styled component for card layout
 const Card = styled.div`
-  border: 1px solid #ccc;
-  margin: 10px;
-  padding: 15px;
-  width: 300px;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+border: 1px solid #ccc;
+margin: 10px;
+padding: 15px;
+width: 300px;
+text-align: center;
+display: flex;
+flex-direction: column;
+align-items: center;
 `;
 
+// Styled component for the team logo
 const Logo = styled.img`
-  width: 100px;
-  height: auto;
-  margin-bottom: 10px;
+width: 100px;
+height: auto;
+margin-bottom: 10px;
 `;
 
+// Styled component for the back button
 const BackButton = styled.button`
-  margin-top: 20px;
-  padding: 10px 20px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  &:hover {
+margin-top: 20px;
+padding: 10px 20px;
+background-color: #007bff;
+color: white;
+border: none;
+border-radius: 5px;
+cursor: pointer;
+&:hover {
     background-color: #0056b3;
-  }
+}
 `;
 
+// Styled component for the team details container
 const TeamDetailsContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+display: flex;
+flex-direction: column;
+align-items: center;
 `;
 
+// Component to display team details
 const TeamDetails = ({ team }) => {
-    const router = useRouter();
+    const router = useRouter(); // Use Next.js router
 
-    if (!team) return <div>Loading...</div>;
+    if (!team) return <div>Loading...</div>; // Show loading if team data is not available
 
     return (
         <Container>
             <Card>
-                {team.logo && <Logo src={team.logo} alt={`${team.name} logo`} />}
-                <h2>{team.name}</h2>
-                <p>{`Founded: ${team.founded}`}</p>
-                <p>{`Country: ${team.country}`}</p>
-                <p>{`Venue: ${team.venue.name}`}</p>
-                <p>{`Capacity: ${team.venue.capacity}`}</p>
-                <BackButton onClick={() => router.back()}>Back</BackButton>
+                {team.logo && <Logo src={team.logo} alt={`${team.name} logo`} />} {/* Display team logo */}
+                <h2>{team.name}</h2> {/* Display team name */}
+                <p>{`Founded: ${team.founded}`}</p> {/* Display team founded year */}
+                <p>{`Country: ${team.country}`}</p> {/* Display team country */}
+                <p>{`Venue: ${team.venue.name}`}</p> {/* Display team venue name */}
+                <p>{`Capacity: ${team.venue.capacity}`}</p> {/* Display team venue capacity */}
+                <BackButton onClick={() => router.back()}>Back</BackButton> {/* Back button to navigate to previous page */}
             </Card>
             <Card>
-                <h2>Upcoming Matches</h2>
-                <UpcomingMatchesCard teamId={team.id} />
+                <h2>Upcoming Matches</h2> {/* Section for upcoming matches */}
+                <UpcomingMatchesCard teamId={team.id} /> {/* Component to display upcoming matches */}
             </Card>
             <Card>
-                <h2>Roster</h2>
-                <TeamRostersCard teamId={team.id} />
+                <h2>Roster</h2> {/* Section for team roster */}
+                <TeamRostersCard teamId={team.id} /> {/* Component to display team roster */}
             </Card>
         </Container>
     );
 }
 
+// Function to fetch static paths for the teams
 export async function getStaticPaths() {
     try {
-        const teams = await fetchTeams();
+        const teams = await fetchTeams(); // Fetch list of teams
         console.log('Teams:', teams); // Log the teams data to check structure
         const paths = teams.map(team => ({
-            params: { id: team.id.toString() }, // Access the correct property
+            params: { id: team.id.toString() }, // Generate paths for static generation
         }));
-        return { paths, fallback: true };
+        return { paths, fallback: true }; // Return paths and fallback option
     } catch (error) {
-        console.error('Error in getStaticPaths:', error);
-        return { paths: [], fallback: true };
+        console.error('Error in getStaticPaths:', error); // Log error if fetching teams fails
+        return { paths: [], fallback: true }; // Return empty paths and fallback option on error
     }
 }
 
+// Function to fetch team details for static props
 export async function getStaticProps({ params }) {
     try {
-        const team = await fetchTeamDetails(params.id);
-        return { props: { team } };
+        const team = await fetchTeamDetails(params.id); // Fetch team details based on id
+        return { props: { team } }; // Return team details as props
     } catch (error) {
-        console.error('Error in getStaticProps:', error);
-        return { props: { team: null } };
+        console.error('Error in getStaticProps:', error); // Log error if fetching team details fails
+        return { props: { team: null } }; // Return null team on error
     }
 }
 
-export default TeamDetails;
+export default TeamDetails; // Export the TeamDetails component as default export
