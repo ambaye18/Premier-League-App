@@ -1,9 +1,7 @@
-// pages/team/[id].jsx
-
 import React from 'react';
 import { useRouter } from 'next/router';
 import styled from 'styled-components';
-import { fetchTeams, fetchTeamDetails } from '../../src/api'; // Ensure this path is correct
+import { fetchTeams, fetchTeamDetails } from '../../src/api';
 import UpcomingMatchesCard from '../../src/components/UpcomingMatchesCard';
 import TeamRostersCard from '../../src/components/TeamRostersCard';
 
@@ -11,21 +9,26 @@ const Container = styled.div`
   padding: 20px;
   max-width: 1200px;
   margin: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `;
 
 const Card = styled.div`
   border: 1px solid #ccc;
   margin: 10px;
   padding: 15px;
-  width: 300px;
+  width: 80%;
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
+  background-color: #f9f9f9;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 `;
 
 const Logo = styled.img`
-  width: 100px;
+  width: 150px;
   height: auto;
   margin-bottom: 10px;
 `;
@@ -43,10 +46,11 @@ const BackButton = styled.button`
   }
 `;
 
-const TeamDetailsContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+const GridContainer = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  width: 100%;
 `;
 
 const TeamDetails = ({ team }) => {
@@ -65,14 +69,16 @@ const TeamDetails = ({ team }) => {
                 <p>{`Capacity: ${team.venue.capacity}`}</p>
                 <BackButton onClick={() => router.back()}>Back</BackButton>
             </Card>
-            <Card>
-                <h2>Upcoming Matches</h2>
-                <UpcomingMatchesCard teamId={team.id} />
-            </Card>
-            <Card>
-                <h2>Roster</h2>
-                <TeamRostersCard teamId={team.id} />
-            </Card>
+            <GridContainer>
+                <Card>
+                    <h2>Upcoming Matches</h2>
+                    <UpcomingMatchesCard teamId={team.id} />
+                </Card>
+                <Card>
+                    <h2>Roster</h2>
+                    <TeamRostersCard teamId={team.id} />
+                </Card>
+            </GridContainer>
         </Container>
     );
 }
@@ -80,9 +86,8 @@ const TeamDetails = ({ team }) => {
 export async function getStaticPaths() {
     try {
         const teams = await fetchTeams();
-        console.log('Teams:', teams); // Log the teams data to check structure
         const paths = teams.map(team => ({
-            params: { id: team.id.toString() }, // Access the correct property
+            params: { id: team.id.toString() },
         }));
         return { paths, fallback: true };
     } catch (error) {
