@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'; // Import React and hooks
 import styled from 'styled-components'; // Import styled-components for styling
 import { fetchUpcomingMatches } from '../api'; // Import API function to fetch upcoming matches
-
+//Component Author: Alden George
 // Styled component for the card layout
 const Card = styled.div`
   border: 1px solid #ddd;
