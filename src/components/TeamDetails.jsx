@@ -1,5 +1,4 @@
 import React from 'react'; // Import React library
-import { useRouter } from 'next/router'; // Import useRouter hook from Next.js
 import styled from 'styled-components'; // Import styled-components for styling
 import { fetchTeams, fetchTeamDetails } from '../../src/api'; // Import API functions
 import UpcomingMatchesCard from '../../src/components/UpcomingMatchesCard'; // Import UpcomingMatchesCard component
