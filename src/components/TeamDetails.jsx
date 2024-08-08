@@ -65,7 +65,7 @@ const TeamDetails = ({ team }) => {
                 <h2>{team.name}</h2> {/* Display team name */}
                 <p>{`Founded: ${team.founded}`}</p> {/* Display team founded year */}
                 <p>{`Country: ${team.country}`}</p> {/* Display team country */}
-                <p>{`Venue: ${team.venue.name}`}</p> {/* Display team venue name */}
+                <p>{`Stadium: ${team.venue.name}`}</p> {/* Display team stadium name */}
                 <p>{`Capacity: ${team.venue.capacity}`}</p> {/* Display team venue capacity */}
                 <BackButton onClick={() => router.back()}>Back</BackButton> {/* Back button to navigate to previous page */}
             </Card>

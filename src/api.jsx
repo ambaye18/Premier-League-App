@@ -1,5 +1,5 @@
 // src/api.jsx
-const API_KEY = 'b10af43bb1ccfe0e72dfb13d2de0cd94'; // API key for authentication
+const API_KEY = '4e4179d85da6119f6dc7d75357d382ae'; // API key for authentication
 const BASE_URL = 'https://v3.football.api-sports.io'; // Base URL for the API
 
 // Function to fetch teams
